@@ -8,7 +8,10 @@ type SelectCardInput = {
 }
 
 export class ContentEngine {
-  constructor(private readonly cards: LearningCard[]) {}
+  constructor(
+    private readonly cards: LearningCard[],
+    private readonly random: () => number = Math.random
+  ) {}
 
   getById(cardId: string | null): LearningCard | undefined {
     return this.cards.find((card) => card.id === cardId)
@@ -23,31 +26,38 @@ export class ContentEngine {
       throw new Error(`No learning cards found for ${settings.topic} ${settings.level}.`)
     }
 
+    const pickRandom = (cards: LearningCard[]): LearningCard | undefined =>
+      cards[Math.floor(this.random() * cards.length)]
+
+    const unseen = eligible.filter(
+      (card) => progress[card.id] === undefined && card.id !== currentCardId
+    )
+    const unseenCard = pickRandom(unseen)
+    if (unseenCard) return unseenCard
+
     const dueForReview = eligible
       .filter((card) => {
         const nextReviewAt = progress[card.id]?.nextReviewAt
-        return nextReviewAt !== null && nextReviewAt !== undefined && new Date(nextReviewAt) <= now
+        return (
+          card.id !== currentCardId &&
+          nextReviewAt !== null &&
+          nextReviewAt !== undefined &&
+          new Date(nextReviewAt) <= now
+        )
       })
-      .sort((left, right) => {
-        const leftReview = progress[left.id]?.nextReviewAt ?? ''
-        const rightReview = progress[right.id]?.nextReviewAt ?? ''
-        return leftReview.localeCompare(rightReview)
-      })
 
-    const dueDifferentCard = dueForReview.find((card) => card.id !== currentCardId)
-    if (dueDifferentCard) return dueDifferentCard
-    if (dueForReview[0]) return dueForReview[0]
+    const dueCard = pickRandom(dueForReview)
+    if (dueCard) return dueCard
 
-    const unseen = eligible.filter((card) => progress[card.id] === undefined)
-    const unseenDifferentCard = unseen.find((card) => card.id !== currentCardId)
-    if (unseenDifferentCard) return unseenDifferentCard
-    if (unseen[0]) return unseen[0]
+    const previouslySeen = eligible
+      .filter((card) => card.id !== currentCardId && progress[card.id] !== undefined)
+      .sort((left, right) =>
+        progress[right.id].lastSeenAt.localeCompare(progress[left.id].lastSeenAt)
+      )
+    const recentCardsToAvoid = Math.min(4, Math.max(0, previouslySeen.length - 1))
+    const fallback = pickRandom(previouslySeen.slice(recentCardsToAvoid))
+    if (fallback) return fallback
 
-    return [...eligible].sort((left, right) => {
-      if (left.id === currentCardId) return 1
-      if (right.id === currentCardId) return -1
-
-      return progress[left.id].lastSeenAt.localeCompare(progress[right.id].lastSeenAt)
-    })[0]
+    return eligible[0]
   }
 }

@@ -3,10 +3,16 @@ import { englishCards } from '../src/main/content/english'
 import { ContentEngine } from '../src/main/services/content-engine'
 import { defaultSettings, type CardProgress } from '../src/shared/models'
 
-describe('ContentEngine', () => {
-  const engine = new ContentEngine(englishCards)
+const createProgress = (cardId: string, nextReviewAt: string | null = null): CardProgress => ({
+  seenCount: 1,
+  lastSeenAt: '2026-08-06T08:00:00.000Z',
+  nextReviewAt,
+  learned: nextReviewAt === null
+})
 
-  it('selects an unseen card for the configured level', () => {
+describe('ContentEngine', () => {
+  it('selects a random unseen card for the configured level', () => {
+    const engine = new ContentEngine(englishCards, () => 0.9)
     const card = engine.selectNext({
       settings: defaultSettings,
       progress: {},
@@ -15,18 +21,50 @@ describe('ContentEngine', () => {
     })
 
     expect(card.level).toBe('B1')
-    expect(card.id).toBe('english-b1-used-to')
+    expect(card.id).not.toBe('english-b1-used-to')
   })
 
-  it('prioritizes a card that is due for review', () => {
-    const progress: Record<string, CardProgress> = {
-      'english-b1-used-to': {
-        seenCount: 1,
-        lastSeenAt: '2026-08-06T08:00:00.000Z',
-        nextReviewAt: '2026-08-06T09:00:00.000Z',
-        learned: false
-      }
+  it('does not immediately return the current card', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
+    const card = engine.selectNext({
+      settings: defaultSettings,
+      progress: {},
+      currentCardId: 'english-b1-used-to'
+    })
+
+    expect(card.id).not.toBe('english-b1-used-to')
+  })
+
+  it('prioritizes unseen content before a due review', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
+    const progress = {
+      'english-b1-used-to': createProgress(
+        'english-b1-used-to',
+        '2026-08-06T09:00:00.000Z'
+      )
     }
+
+    const card = engine.selectNext({
+      settings: defaultSettings,
+      progress,
+      currentCardId: 'english-b1-used-to',
+      now: new Date('2026-08-06T10:00:00.000Z')
+    })
+
+    expect(progress[card.id as keyof typeof progress]).toBeUndefined()
+  })
+
+  it('selects a due review after all cards at the level have been seen', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
+    const progress = Object.fromEntries(
+      englishCards
+        .filter((card) => card.level === 'B1')
+        .map((card) => [card.id, createProgress(card.id)])
+    )
+    progress['english-b1-used-to'] = createProgress(
+      'english-b1-used-to',
+      '2026-08-06T09:00:00.000Z'
+    )
 
     const card = engine.selectNext({
       settings: defaultSettings,
@@ -38,7 +76,32 @@ describe('ContentEngine', () => {
     expect(card.id).toBe('english-b1-used-to')
   })
 
+  it('avoids the most recently shown cards when no review is due', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
+    const cards = englishCards.filter((card) => card.level === 'B1')
+    const progress = Object.fromEntries(
+      cards.map((card, index) => [
+        card.id,
+        {
+          ...createProgress(card.id),
+          lastSeenAt: new Date(Date.UTC(2026, 7, 6, 10, 0) - index * 60_000).toISOString()
+        }
+      ])
+    )
+    const recentIds = cards.slice(0, 5).map((card) => card.id)
+
+    const card = engine.selectNext({
+      settings: defaultSettings,
+      progress,
+      currentCardId: cards[0].id,
+      now: new Date('2026-08-06T10:00:00.000Z')
+    })
+
+    expect(recentIds).not.toContain(card.id)
+  })
+
   it('does not return content from another level', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
     const card = engine.selectNext({
       settings: { ...defaultSettings, level: 'A2' },
       progress: {},

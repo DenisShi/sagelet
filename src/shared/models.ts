@@ -12,6 +12,12 @@ export const learningCardSchema = z.object({
   notificationText: z.string().min(1).max(220),
   explanation: z.string().min(1),
   example: z.string().min(1),
+  russian: z.object({
+    title: z.string().min(1),
+    notificationText: z.string().min(1),
+    explanation: z.string().min(1),
+    example: z.string().min(1)
+  }),
   tags: z.array(z.string()),
   estimatedSeconds: z.number().int().positive()
 })
@@ -45,6 +51,8 @@ export type CardCategory = (typeof cardCategories)[number]
 export type LearningCard = z.infer<typeof learningCardSchema>
 export type AppSettings = z.infer<typeof appSettingsSchema>
 export type CardFeedback = 'understood' | 'repeat'
+
+export const cardFeedbackSchema = z.enum(['understood', 'repeat'])
 
 export type CardProgress = {
   seenCount: number

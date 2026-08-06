@@ -1,9 +1,8 @@
-import type { AppSettings, CardFeedback, HistoryItem, LearningCard } from './models'
+import type { AppSettings, CardFeedback, LearningCard } from './models'
 
 export type BootstrapPayload = {
   settings: AppSettings
   currentCard: LearningCard
-  history: HistoryItem[]
   nextNotificationAt: string
   pausedUntil: string | null
 }
