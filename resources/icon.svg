@@ -9,5 +9,5 @@
     </filter>
   </defs>
   <rect x="36" y="36" width="440" height="440" rx="142" fill="url(#background)" filter="url(#shadow)"/>
-  <path d="M164 148h61v91l84-91h79L286 248l111 121h-82l-90-105v105h-61V148Z" fill="white"/>
+  <text x="256" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="286" font-weight="700" fill="white">S</text>
 </svg>

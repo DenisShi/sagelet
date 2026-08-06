@@ -418,12 +418,6 @@ input {
   line-height: 1.55;
 }
 
-.translation-text {
-  margin-top: 5px;
-  color: #8a8799;
-  font-size: 12px;
-}
-
 .lesson-tags {
   display: flex;
   flex-wrap: wrap;

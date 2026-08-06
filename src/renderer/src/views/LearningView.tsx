@@ -75,7 +75,6 @@ export function LearningView({
           <div className="example-box">
             <div className="example-label">EXAMPLE</div>
             <div className="example-text">“{card.example}”</div>
-            {card.translation && <div className="translation-text">{card.translation}</div>}
           </div>
 
           <div className="lesson-tags">

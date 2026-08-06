@@ -12,7 +12,6 @@ export const learningCardSchema = z.object({
   notificationText: z.string().min(1).max(220),
   explanation: z.string().min(1),
   example: z.string().min(1),
-  translation: z.string().optional(),
   tags: z.array(z.string()),
   estimatedSeconds: z.number().int().positive()
 })

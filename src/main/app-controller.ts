@@ -24,7 +24,7 @@ const trayIconSvg = `
       </linearGradient>
     </defs>
     <rect x="5" y="5" width="54" height="54" rx="17" fill="url(#g)"/>
-    <path d="M20 19h7v11l10-11h9L34 31l13 15h-9L27 33v13h-7V19Z" fill="white"/>
+    <text x="32" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="39" font-weight="700" fill="white">S</text>
   </svg>
 `
 
