@@ -61,21 +61,23 @@ export function LearningView({
         </div>
       </header>
 
-      <section className="language-section language-section--english">
-        <h1>{card.title}</h1>
-        <p className="notification-copy">{card.notificationText}</p>
-        <p className="explanation-copy">{card.explanation}</p>
-      </section>
+      <div className="language-grid">
+        <section className="language-section language-section--english">
+          <span className="language-label">ENGLISH</span>
+          <h1>{card.title}</h1>
+          <p className="notification-copy">{card.notificationText}</p>
+          <p className="explanation-copy">{card.explanation}</p>
+        </section>
 
-      <section className="language-section language-section--russian" lang="ru">
-        <span className="translation-label">ПО-РУССКИ</span>
-        <h2>{card.russian.title}</h2>
-        <p className="translation-summary">{card.russian.notificationText}</p>
-        <p className="translation-copy">{card.russian.explanation}</p>
-      </section>
+        <section className="language-section language-section--russian" lang="ru">
+          <span className="language-label">РУССКИЙ</span>
+          <h2>{card.russian.title}</h2>
+          <p className="translation-summary">{card.russian.notificationText}</p>
+          <p className="translation-copy">{card.russian.explanation}</p>
+        </section>
+      </div>
 
       <div className="example-box">
-        <span className="example-label">EXAMPLE</span>
         <strong>“{card.example}”</strong>
         <span className="example-translation" lang="ru">{card.russian.example}</span>
       </div>
