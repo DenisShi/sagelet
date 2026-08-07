@@ -37,7 +37,7 @@ export function LearningView({
 
       <header className="lesson-meta">
         <div className="lesson-meta__labels">
-          <Tag color="purple" bordered={false}>
+          <Tag className="category-tag" bordered={false}>
             {card.category.toUpperCase()}
           </Tag>
           <span className="level-pill">ENGLISH {card.level}</span>
