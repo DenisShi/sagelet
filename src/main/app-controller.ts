@@ -39,10 +39,10 @@ const trayIconSvg = `
   </svg>
 `
 
-const PANEL_WIDTH = 680
-const PANEL_HEIGHT = 720
+const PANEL_WIDTH = 520
+const PANEL_HEIGHT = 560
 const EDGE_TOLERANCE = 2
-const EDGE_LEAVE_DELAY = 700
+const EDGE_WATCH_INTERVAL = 50
 
 const createAppIcon = () => {
   const iconPath = app.isPackaged
@@ -67,7 +67,6 @@ export class AppController {
   private edgeWatcher: NodeJS.Timeout | null = null
   private windowAnimation: NodeJS.Timeout | null = null
   private edgeOpened = false
-  private edgeLeftAt: number | null = null
 
   constructor() {
     this.store = new JsonStore(join(app.getPath('userData'), 'sagelet-state.json'))
@@ -247,14 +246,9 @@ export class AppController {
         cursor.y >= bounds.y &&
         cursor.y <= bounds.y + bounds.height
 
-      if (insideWindow || atTopEdge) {
-        this.edgeLeftAt = null
-        return
-      }
-
-      this.edgeLeftAt ??= Date.now()
-      if (Date.now() - this.edgeLeftAt >= EDGE_LEAVE_DELAY) this.hideEdgeWindow()
-    }, 100)
+      if (insideWindow || atTopEdge) return
+      this.hideEdgeWindow()
+    }, EDGE_WATCH_INTERVAL)
   }
 
   private revealFromEdge(cursor: Point): void {
@@ -262,7 +256,6 @@ export class AppController {
 
     const target = this.getPanelBounds(cursor)
     this.edgeOpened = true
-    this.edgeLeftAt = null
     this.window.setBounds({ ...target, y: target.y - target.height })
     this.window.showInactive()
     this.animateWindowTo(target.y)
@@ -272,9 +265,9 @@ export class AppController {
     if (!this.window || this.window.isDestroyed()) return
 
     this.edgeOpened = false
-    this.edgeLeftAt = null
-    const hidden = this.getHiddenPanelBounds(screen.getDisplayMatching(this.window.getBounds()).bounds)
-    this.animateWindowTo(hidden.y, () => this.window?.hide())
+    if (this.windowAnimation) clearInterval(this.windowAnimation)
+    this.windowAnimation = null
+    this.window.hide()
   }
 
   private animateWindowTo(targetY: number, onComplete?: () => void): void {
