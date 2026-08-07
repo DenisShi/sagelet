@@ -39,8 +39,8 @@ const trayIconSvg = `
   </svg>
 `
 
-const PANEL_WIDTH = 520
-const PANEL_HEIGHT = 560
+const PANEL_WIDTH = 780
+const PANEL_HEIGHT = 390
 const EDGE_TOLERANCE = 2
 const EDGE_WATCH_INTERVAL = 50
 
@@ -265,9 +265,9 @@ export class AppController {
     if (!this.window || this.window.isDestroyed()) return
 
     this.edgeOpened = false
-    if (this.windowAnimation) clearInterval(this.windowAnimation)
-    this.windowAnimation = null
-    this.window.hide()
+    const display = screen.getDisplayMatching(this.window.getBounds())
+    const hiddenY = display.workArea.y - this.window.getBounds().height
+    this.animateWindowTo(hiddenY, () => this.window?.hide())
   }
 
   private animateWindowTo(targetY: number, onComplete?: () => void): void {
