@@ -1,5 +1,5 @@
 import { SettingOutlined } from '@ant-design/icons'
-import { Button, Popover, Select, Switch } from 'antd'
+import { Button, Divider, Flex, Form, Popover, Select, Switch, Typography } from 'antd'
 import { useEffect, useState, type JSX } from 'react'
 import type { AppSettings, LearningLevel } from '../../../shared/models'
 
@@ -33,47 +33,44 @@ export function QuickSettings({ settings, busy, onSave }: Props): JSX.Element {
   }
 
   const content = (
-    <div className="quick-settings">
-      <div className="quick-settings__row">
-        <span>Notifications</span>
+    <Form className="quick-settings" layout="vertical" size="small">
+      <Flex className="quick-settings__switch-row" align="center" justify="space-between">
+        <Typography.Text>Notifications</Typography.Text>
         <Switch
           size="small"
           checked={draft.notificationsEnabled}
           onChange={(notificationsEnabled) => setDraft({ ...draft, notificationsEnabled })}
         />
-      </div>
-      <label className="quick-settings__field">
-        <span>English level</span>
+      </Flex>
+      <Divider />
+      <Form.Item label="English level">
         <Select
-          size="small"
           value={draft.level}
           options={levelOptions}
           onChange={(level) => setDraft({ ...draft, level })}
         />
-      </label>
-      <label className="quick-settings__field">
-        <span>Reminder interval</span>
+      </Form.Item>
+      <Form.Item label="Reminder interval">
         <Select
-          size="small"
           value={draft.notificationIntervalMinutes}
           options={intervalOptions}
           onChange={(notificationIntervalMinutes) =>
             setDraft({ ...draft, notificationIntervalMinutes })
           }
         />
-      </label>
-      <div className="quick-settings__row">
-        <span>Start with Windows</span>
+      </Form.Item>
+      <Flex className="quick-settings__switch-row" align="center" justify="space-between">
+        <Typography.Text>Start with Windows</Typography.Text>
         <Switch
           size="small"
           checked={draft.startAtLogin}
           onChange={(startAtLogin) => setDraft({ ...draft, startAtLogin })}
         />
-      </div>
+      </Flex>
       <Button type="primary" size="small" block loading={busy} onClick={save}>
         Save
       </Button>
-    </div>
+    </Form>
   )
 
   return (
