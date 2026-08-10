@@ -40,9 +40,12 @@ input {
   --panel-header-background: #f8fafb;
   --panel-example-background: #f6f9fc;
   --panel-shadow: rgba(31, 41, 51, 0.2);
+  --panel-text: #202830;
+  --panel-secondary-text: #5f6b76;
   width: 100%;
   height: 100%;
   padding: 0 6px 8px;
+  color: var(--panel-text);
 }
 
 .panel-shell--dark {
@@ -50,6 +53,8 @@ input {
   --panel-header-background: #202329;
   --panel-example-background: #202731;
   --panel-shadow: rgba(0, 0, 0, 0.46);
+  --panel-text: #f3f4f6;
+  --panel-secondary-text: #aeb6c2;
 }
 
 .lesson-card {
@@ -91,7 +96,7 @@ input {
 .window-actions .ant-btn {
   width: 28px;
   padding-inline: 0;
-  color: #5f6b76;
+  color: var(--panel-secondary-text);
 }
 
 .lesson-card .ant-card-body {

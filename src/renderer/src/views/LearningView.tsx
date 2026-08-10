@@ -2,13 +2,12 @@ import {
   ArrowRightOutlined,
   CheckOutlined,
   ClockCircleOutlined,
-  CloseOutlined,
-  RedoOutlined
+  CloseOutlined
 } from '@ant-design/icons'
 import { Alert, Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
 import type { JSX } from 'react'
 import type { BootstrapPayload } from '../../../shared/contracts'
-import type { AppSettings, CardFeedback } from '../../../shared/models'
+import type { AppSettings } from '../../../shared/models'
 import { QuickSettings } from './QuickSettings'
 
 const { Paragraph, Text, Title } = Typography
@@ -17,7 +16,7 @@ type Props = {
   data: BootstrapPayload
   busy: boolean
   onNext: () => void
-  onFeedback: (feedback: CardFeedback) => void
+  onGotIt: () => void
   onSaveSettings: (settings: AppSettings) => void
   onHide: () => void
 }
@@ -26,7 +25,7 @@ export function LearningView({
   data,
   busy,
   onNext,
-  onFeedback,
+  onGotIt,
   onSaveSettings,
   onHide
 }: Props): JSX.Element {
@@ -113,19 +112,13 @@ export function LearningView({
             type="primary"
             icon={<CheckOutlined />}
             loading={busy}
-            onClick={() => onFeedback('understood')}
+            onClick={onGotIt}
           >
             Got it
           </Button>
           <Button
-            icon={<RedoOutlined />}
-            disabled={busy}
-            onClick={() => onFeedback('repeat')}
-          >
-            Repeat later
-          </Button>
-          <Button
-            type="text"
+            color="purple"
+            variant="solid"
             icon={<ArrowRightOutlined />}
             iconPosition="end"
             disabled={busy}
