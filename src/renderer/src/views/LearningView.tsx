@@ -114,9 +114,11 @@ export function LearningView({
           {lessonPoints.map((point) => (
             <div className="lesson-point" key={point.title}>
               <div className="lesson-point__english">
-                <Text strong className="lesson-point__term">{point.title}</Text>
-                <Text className="lesson-point__equals">=</Text>
-                <Text>{point.english}</Text>
+                <div className="lesson-point__heading">
+                  <Text strong className="lesson-point__term">{point.title}</Text>
+                  <Text className="lesson-point__equals">=</Text>
+                </div>
+                <Text className="lesson-point__description">{point.english}</Text>
               </div>
               <Divider type="vertical" />
               <Text className="lesson-point__russian" lang="ru">{point.russian}</Text>

@@ -39,7 +39,7 @@ const trayIconSvg = `
 `
 
 const PANEL_WIDTH = 780
-const PANEL_HEIGHT = 390
+const PANEL_HEIGHT = 430
 const EDGE_TOLERANCE = 2
 const EDGE_WATCH_INTERVAL = 50
 
