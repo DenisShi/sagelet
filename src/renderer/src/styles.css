@@ -1,8 +1,7 @@
 :root {
-  color: #202830;
+  color: #232b38;
   background: transparent;
-  font-family:
-    "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -31,17 +30,20 @@ input {
   width: 100%;
   height: 100%;
   place-items: center;
-  border-radius: 0 0 10px 10px;
-  background: #f3f5f7;
+  border-radius: 0 0 12px 12px;
+  background: #fbf8f3;
 }
 
 .panel-shell {
-  --panel-background: #ffffff;
-  --panel-header-background: #f8fafb;
-  --panel-example-background: #f6f9fc;
-  --panel-shadow: rgba(31, 41, 51, 0.2);
-  --panel-text: #202830;
-  --panel-secondary-text: #5f6b76;
+  --accent: #a6380c;
+  --accent-dark: #7e2809;
+  --panel-background: #fdfaf5;
+  --panel-header-background: rgba(255, 252, 247, 0.92);
+  --panel-border: #e5d6c4;
+  --panel-soft-border: #ecd7c1;
+  --panel-shadow: rgba(74, 49, 31, 0.22);
+  --panel-text: #232b38;
+  --panel-secondary-text: #666b73;
   width: 100%;
   height: 100%;
   padding: 0 6px 8px;
@@ -49,22 +51,26 @@ input {
 }
 
 .panel-shell--dark {
-  --panel-background: #181a1f;
-  --panel-header-background: #202329;
-  --panel-example-background: #202731;
-  --panel-shadow: rgba(0, 0, 0, 0.46);
-  --panel-text: #f3f4f6;
-  --panel-secondary-text: #aeb6c2;
+  --accent: #de7846;
+  --accent-dark: #b7562b;
+  --panel-background: #1e1b19;
+  --panel-header-background: #24201d;
+  --panel-border: #4d4037;
+  --panel-soft-border: #5c4435;
+  --panel-shadow: rgba(0, 0, 0, 0.48);
+  --panel-text: #f5eee7;
+  --panel-secondary-text: #bcb2aa;
 }
 
 .lesson-card {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  border-color: var(--panel-border);
   border-top: 0;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 12px 12px;
   background: var(--panel-background);
-  box-shadow: 0 12px 28px var(--panel-shadow);
+  box-shadow: 0 14px 30px var(--panel-shadow);
 }
 
 .lesson-card.ant-card {
@@ -73,30 +79,71 @@ input {
 }
 
 .lesson-card .ant-card-head {
-  flex: 0 0 auto;
-  padding-inline: 16px;
+  flex: 0 0 58px;
+  min-height: 58px;
+  padding-inline: 20px;
+  border-color: var(--panel-border);
   background: var(--panel-header-background);
 }
 
 .lesson-card .ant-card-head-title {
-  font-size: 12px;
+  overflow: visible;
+}
+
+.lesson-header {
+  min-width: 0;
+}
+
+.brand {
+  flex: 0 0 auto;
+}
+
+.brand__mark {
+  color: var(--accent);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.brand__name {
+  color: var(--accent) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.brand-divider.ant-divider-vertical {
+  height: 24px;
+  margin: 0;
+  border-color: var(--panel-border);
+}
+
+.category-tag.ant-tag {
+  min-width: 86px;
+  margin: 0;
+  padding: 4px 14px;
+  border-color: var(--accent-dark);
+  border-radius: 5px;
+  background: linear-gradient(135deg, #8d3211, #bc5825);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.24);
+  color: #fff8ef;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 18px;
+  text-align: center;
+}
+
+.level-label {
+  flex: 0 0 auto;
+  font-size: 13px;
   font-weight: 500;
 }
 
-.lesson-card .ant-card-head .ant-tag {
-  margin: 0;
-  font-size: 10px;
-  line-height: 18px;
-}
-
-.reading-time {
-  font-size: 11px;
-}
-
 .window-actions .ant-btn {
-  width: 28px;
+  width: 38px;
+  height: 38px;
   padding-inline: 0;
   color: var(--panel-secondary-text);
+  font-size: 20px;
 }
 
 .lesson-card .ant-card-body {
@@ -104,85 +151,170 @@ input {
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
+  padding: 18px 22px 16px;
 }
 
-.language-grid {
+.lesson-title.ant-typography {
+  margin: 0;
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.title-ornament {
+  display: flex;
+  align-items: center;
+  width: 160px;
+  margin: 6px auto 13px;
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.title-ornament::before,
+.title-ornament::after {
+  flex: 1;
+  height: 1px;
+  background: var(--panel-soft-border);
+  content: "";
+}
+
+.title-ornament span {
+  padding: 0 8px;
+}
+
+.lesson-content {
+  display: grid;
   flex: 1 1 auto;
+  grid-template-columns: minmax(0, 2.1fr) minmax(240px, 1fr);
+  gap: 16px;
   min-height: 0;
 }
 
-.language-panel {
-  flex: 1 1 0;
+.lesson-points {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   min-width: 0;
 }
 
-.language-divider.ant-divider-vertical {
+.lesson-point {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: 42px minmax(0, 1fr) auto minmax(0, 0.9fr);
+  align-items: center;
+  min-height: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--panel-soft-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel-background) 92%, var(--accent) 8%);
+}
+
+.lesson-point__icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--accent-dark);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #a73d14, #cf6a2b);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28);
+  color: white;
+  font-size: 17px;
+}
+
+.lesson-point__english {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.lesson-point__term {
+  flex: 0 0 auto;
+  font-size: 16px;
+}
+
+.lesson-point__equals {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.lesson-point > .ant-divider-vertical {
   align-self: stretch;
   height: auto;
-  margin: 0 20px;
+  margin: 0;
+  border-color: var(--panel-border);
 }
 
-.language-label {
-  font-size: 10px;
+.lesson-point__russian {
+  padding-left: 14px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.example-card {
+  min-width: 0;
+  padding: 11px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--panel-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel-background) 96%, var(--accent) 4%);
+}
+
+.example-card__quote {
+  height: 22px;
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 37px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.example-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.example-language {
+  color: var(--accent) !important;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
 }
 
-.language-panel .ant-typography {
-  margin-bottom: 0;
-}
-
-.language-panel h4.ant-typography {
-  margin-top: 3px;
-  margin-bottom: 5px;
-  font-size: 18px;
-  line-height: 1.2;
-}
-
-.lesson-summary {
+.example-row .ant-typography {
+  margin: 0;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.55;
 }
 
-.lesson-explanation {
-  display: -webkit-box;
-  margin-top: 5px;
-  overflow: hidden;
-  font-size: 11px;
-  line-height: 1.4;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+.example-card > .ant-divider-horizontal {
+  margin: 9px 0;
+  border-color: var(--panel-soft-border);
 }
 
-.example-alert {
+.lesson-footer {
   flex: 0 0 auto;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: var(--panel-example-background);
-}
-
-.example-alert .ant-alert-title {
-  margin-bottom: 2px;
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.example-alert .ant-alert-description {
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-.action-divider.ant-divider-horizontal {
-  margin: 10px 0 8px;
-}
-
-.lesson-actions {
-  flex: 0 0 auto;
+  padding-top: 14px;
 }
 
 .lesson-actions .ant-btn {
-  min-width: 96px;
-  font-size: 12px;
+  min-width: 142px;
+  height: 40px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lesson-actions .got-it-button {
+  border-color: #d0bba5;
+  background: var(--panel-background);
 }
 
 .quick-settings {
@@ -212,4 +344,23 @@ input {
 
 .quick-settings > .ant-btn {
   margin-top: 12px;
+}
+
+@media (max-width: 650px) {
+  .lesson-header {
+    gap: 12px;
+  }
+
+  .brand-divider,
+  .level-label {
+    display: none;
+  }
+
+  .lesson-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .example-card {
+    display: none;
+  }
 }

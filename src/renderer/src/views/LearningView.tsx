@@ -1,13 +1,13 @@
 import {
   ArrowRightOutlined,
+  ArrowUpOutlined,
   CheckOutlined,
-  ClockCircleOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { Alert, Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
-import type { JSX } from 'react'
+import { Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
+import type { JSX, ReactNode } from 'react'
 import type { BootstrapPayload } from '../../../shared/contracts'
-import type { AppSettings } from '../../../shared/models'
+import type { AppSettings, LearningCard } from '../../../shared/models'
 import { QuickSettings } from './QuickSettings'
 
 const { Paragraph, Text, Title } = Typography
@@ -21,6 +21,50 @@ type Props = {
   onHide: () => void
 }
 
+type LessonPoint = {
+  title: string
+  english: string
+  russian: string
+  icon: ReactNode
+}
+
+const splitComparisonTitle = (title: string): string[] =>
+  title.split(/\s+(?:vs|or|and)\s+|\s*\/\s*/i).map((part) => part.trim())
+
+const splitClauses = (text: string): string[] =>
+  text.split(/;\s*/).map((part) => part.trim())
+
+const removeTermPrefix = (text: string, term: string): string => {
+  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return text
+    .replace(new RegExp(`^[“\"']?${escapedTerm}[”\"']?\\s+(?:means|означает)\\s+`, 'i'), '')
+    .replace(/^./, (character) => character.toLocaleLowerCase())
+}
+
+const getLessonPoints = (card: LearningCard): LessonPoint[] => {
+  const terms = splitComparisonTitle(card.title)
+  const englishClauses = splitClauses(card.notificationText)
+  const russianClauses = splitClauses(card.russian.notificationText)
+
+  if (terms.length === 2 && englishClauses.length === 2 && russianClauses.length === 2) {
+    return terms.map((term, index) => ({
+      title: term,
+      english: removeTermPrefix(englishClauses[index], term),
+      russian: removeTermPrefix(russianClauses[index], term),
+      icon: index === 0 ? <ArrowUpOutlined /> : <span>=</span>
+    }))
+  }
+
+  return [
+    {
+      title: card.title,
+      english: card.notificationText,
+      russian: card.russian.notificationText,
+      icon: <ArrowUpOutlined />
+    }
+  ]
+}
+
 export function LearningView({
   data,
   busy,
@@ -30,6 +74,7 @@ export function LearningView({
   onHide
 }: Props): JSX.Element {
   const { currentCard: card } = data
+  const lessonPoints = getLessonPoints(card)
 
   return (
     <Card
@@ -37,13 +82,15 @@ export function LearningView({
       size="small"
       variant="outlined"
       title={
-        <Space size={8} wrap>
-          <Tag color="blue">{card.category.toUpperCase()}</Tag>
-          <Text type="secondary">English {card.level}</Text>
-          <Text type="secondary" className="reading-time">
-            <ClockCircleOutlined /> {card.estimatedSeconds} sec
-          </Text>
-        </Space>
+        <Flex className="lesson-header" align="center" gap={26}>
+          <Flex className="brand" align="center" gap={9}>
+            <span className="brand__mark" aria-hidden="true">✦</span>
+            <Text className="brand__name">Sagelet</Text>
+          </Flex>
+          <Divider type="vertical" className="brand-divider" />
+          <Tag className="category-tag">{card.category.toUpperCase()}</Tag>
+          <Text type="secondary" className="level-label">English {card.level}</Text>
+        </Flex>
       }
       extra={
         <Space.Compact className="window-actions">
@@ -54,7 +101,6 @@ export function LearningView({
           />
           <Button
             type="text"
-            size="small"
             icon={<CloseOutlined />}
             aria-label="Hide Sagelet"
             onClick={onHide}
@@ -62,54 +108,43 @@ export function LearningView({
         </Space.Compact>
       }
     >
-      <Flex className="language-grid" align="stretch">
-        <section className="language-panel">
-          <Text className="language-label" type="secondary">
-            ENGLISH
-          </Text>
-          <Title level={4}>{card.title}</Title>
-          <Paragraph className="lesson-summary" strong>
-            {card.notificationText}
-          </Paragraph>
-          <Paragraph className="lesson-explanation" type="secondary">
-            {card.explanation}
-          </Paragraph>
+      <Title level={2} className="lesson-title">{card.title}</Title>
+      <div className="title-ornament" aria-hidden="true"><span>✦</span></div>
+
+      <div className="lesson-content">
+        <section className="lesson-points" aria-label="Lesson explanation">
+          {lessonPoints.map((point) => (
+            <div className="lesson-point" key={point.title}>
+              <div className="lesson-point__icon" aria-hidden="true">{point.icon}</div>
+              <div className="lesson-point__english">
+                <Text strong className="lesson-point__term">{point.title}</Text>
+                <Text className="lesson-point__equals">=</Text>
+                <Text>{point.english}</Text>
+              </div>
+              <Divider type="vertical" />
+              <Text className="lesson-point__russian" lang="ru">{point.russian}</Text>
+            </div>
+          ))}
         </section>
 
-        <Divider type="vertical" className="language-divider" />
-
-        <section className="language-panel" lang="ru">
-          <Text className="language-label" type="secondary">
-            РУССКИЙ
-          </Text>
-          <Title level={4}>{card.russian.title}</Title>
-          <Paragraph className="lesson-summary" strong>
-            {card.russian.notificationText}
-          </Paragraph>
-          <Paragraph className="lesson-explanation" type="secondary">
-            {card.russian.explanation}
-          </Paragraph>
+        <section className="example-card" aria-label="Example">
+          <div className="example-card__quote" aria-hidden="true">“</div>
+          <div className="example-row">
+            <Text className="example-language">EN</Text>
+            <Paragraph>{card.example}</Paragraph>
+          </div>
+          <Divider dashed />
+          <div className="example-row">
+            <Text className="example-language">RU</Text>
+            <Paragraph lang="ru">{card.russian.example}</Paragraph>
+          </div>
         </section>
-      </Flex>
+      </div>
 
-      <Alert
-        className="example-alert"
-        type="info"
-        variant="outlined"
-        showIcon={false}
-        title={<Text strong>“{card.example}”</Text>}
-        description={
-          <Text type="secondary" lang="ru">
-            {card.russian.example}
-          </Text>
-        }
-      />
-
-      <footer>
-        <Divider className="action-divider" />
-        <Flex className="lesson-actions" justify="center" gap={8}>
+      <footer className="lesson-footer">
+        <Flex className="lesson-actions" justify="flex-end" gap={14}>
           <Button
-            type="primary"
+            className="got-it-button"
             icon={<CheckOutlined />}
             loading={busy}
             onClick={onGotIt}
@@ -117,8 +152,7 @@ export function LearningView({
             Got it
           </Button>
           <Button
-            color="purple"
-            variant="solid"
+            type="primary"
             icon={<ArrowRightOutlined />}
             iconPosition="end"
             disabled={busy}
