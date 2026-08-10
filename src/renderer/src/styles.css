@@ -203,34 +203,22 @@ input {
 .lesson-point {
   display: grid;
   flex: 1 1 0;
-  grid-template-columns: 42px minmax(0, 1fr) auto minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 0.85fr);
   align-items: center;
   min-height: 0;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border: 1px solid var(--panel-soft-border);
   border-radius: 8px;
   background: color-mix(in srgb, var(--panel-background) 92%, var(--accent) 8%);
 }
 
-.lesson-point__icon {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border: 1px solid var(--accent-dark);
-  border-radius: 50%;
-  background: linear-gradient(145deg, #a73d14, #cf6a2b);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28);
-  color: white;
-  font-size: 17px;
-}
-
 .lesson-point__english {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
   align-items: baseline;
   gap: 10px;
   min-width: 0;
-  padding: 0 12px;
+  padding-right: 14px;
   font-size: 12px;
   line-height: 1.45;
 }
@@ -321,12 +309,21 @@ input {
   width: 220px;
 }
 
+.quick-settings-popover .ant-popover-inner {
+  padding: 10px 12px;
+}
+
+.quick-settings-popover .ant-popover-title {
+  min-height: 18px;
+  margin-bottom: 5px;
+}
+
 .quick-settings .ant-divider-horizontal {
-  margin: 10px 0;
+  margin: 7px 0;
 }
 
 .quick-settings .ant-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .quick-settings .ant-form-item-label {
@@ -343,7 +340,7 @@ input {
 }
 
 .quick-settings > .ant-btn {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 @media (max-width: 650px) {

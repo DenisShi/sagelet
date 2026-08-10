@@ -1,11 +1,10 @@
 import {
   ArrowRightOutlined,
-  ArrowUpOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
 import { Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
-import type { JSX, ReactNode } from 'react'
+import type { JSX } from 'react'
 import type { BootstrapPayload } from '../../../shared/contracts'
 import type { AppSettings, LearningCard } from '../../../shared/models'
 import { QuickSettings } from './QuickSettings'
@@ -25,19 +24,20 @@ type LessonPoint = {
   title: string
   english: string
   russian: string
-  icon: ReactNode
 }
 
 const splitComparisonTitle = (title: string): string[] =>
   title.split(/\s+(?:vs|or|and)\s+|\s*\/\s*/i).map((part) => part.trim())
 
 const splitClauses = (text: string): string[] =>
-  text.split(/;\s*/).map((part) => part.trim())
+  text.split(/;\s*|,\s*(?=[“"'])/).map((part) => part.trim())
 
 const removeTermPrefix = (text: string, term: string): string => {
   const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   return text
-    .replace(new RegExp(`^[“\"']?${escapedTerm}[”\"']?\\s+(?:means|означает)\\s+`, 'i'), '')
+    .replace(new RegExp(`^[“\"']?${escapedTerm}[”\"']?\\s*`, 'i'), '')
+    .replace(/^(?:means|означает)\s+/i, '')
+    .replace(/^—\s*/, '')
     .replace(/^./, (character) => character.toLocaleLowerCase())
 }
 
@@ -50,8 +50,7 @@ const getLessonPoints = (card: LearningCard): LessonPoint[] => {
     return terms.map((term, index) => ({
       title: term,
       english: removeTermPrefix(englishClauses[index], term),
-      russian: removeTermPrefix(russianClauses[index], term),
-      icon: index === 0 ? <ArrowUpOutlined /> : <span>=</span>
+      russian: removeTermPrefix(russianClauses[index], term)
     }))
   }
 
@@ -59,8 +58,7 @@ const getLessonPoints = (card: LearningCard): LessonPoint[] => {
     {
       title: card.title,
       english: card.notificationText,
-      russian: card.russian.notificationText,
-      icon: <ArrowUpOutlined />
+      russian: card.russian.notificationText
     }
   ]
 }
@@ -115,7 +113,6 @@ export function LearningView({
         <section className="lesson-points" aria-label="Lesson explanation">
           {lessonPoints.map((point) => (
             <div className="lesson-point" key={point.title}>
-              <div className="lesson-point__icon" aria-hidden="true">{point.icon}</div>
               <div className="lesson-point__english">
                 <Text strong className="lesson-point__term">{point.title}</Text>
                 <Text className="lesson-point__equals">=</Text>

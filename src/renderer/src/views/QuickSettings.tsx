@@ -91,6 +91,7 @@ export function QuickSettings({ settings, busy, onSave }: Props): JSX.Element {
 
   return (
     <Popover
+      classNames={{ root: 'quick-settings-popover' }}
       content={content}
       title="Settings"
       trigger="click"
