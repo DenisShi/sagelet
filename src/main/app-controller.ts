@@ -3,7 +3,6 @@ import {
   BrowserWindow,
   Menu,
   nativeImage,
-  Notification,
   powerMonitor,
   screen,
   Tray,
@@ -67,12 +66,13 @@ export class AppController {
   private edgeWatcher: NodeJS.Timeout | null = null
   private windowAnimation: NodeJS.Timeout | null = null
   private edgeOpened = false
+  private pointerEnteredPanel = false
 
   constructor() {
     this.store = new JsonStore(join(app.getPath('userData'), 'sagelet-state.json'))
     this.scheduler = new NotificationScheduler({
       store: this.store,
-      onDue: () => this.showScheduledNotification(),
+      onDue: () => this.showScheduledPanel(),
       isScreenLocked: () => this.screenLocked
     })
   }
@@ -96,6 +96,7 @@ export class AppController {
   showWindow(): void {
     if (!this.window || this.window.isDestroyed()) this.createWindow()
     this.edgeOpened = false
+    this.pointerEnteredPanel = false
     const bounds = this.getPanelBounds(screen.getCursorScreenPoint())
     this.window?.setBounds(bounds)
     this.window?.show()
@@ -155,10 +156,6 @@ export class AppController {
     this.store.setNextNotificationAt(pausedUntil)
     this.notifyRenderer()
     return this.getBootstrap()
-  }
-
-  showTestNotification(): { shown: boolean } {
-    return { shown: this.showNotification(this.ensureCurrentCard()) }
   }
 
   private createWindow(): void {
@@ -246,16 +243,30 @@ export class AppController {
         cursor.y >= bounds.y &&
         cursor.y <= bounds.y + bounds.height
 
-      if (insideWindow || atTopEdge) return
+      if (insideWindow) {
+        this.pointerEnteredPanel = true
+        return
+      }
+      if (atTopEdge || !this.pointerEnteredPanel) return
       this.hideEdgeWindow()
     }, EDGE_WATCH_INTERVAL)
   }
 
   private revealFromEdge(cursor: Point): void {
+    this.revealPanel(cursor, true)
+  }
+
+  private revealScheduledPanel(): void {
+    if (!this.window || this.window.isDestroyed() || this.window.isVisible()) return
+    this.revealPanel(screen.getCursorScreenPoint(), false)
+  }
+
+  private revealPanel(cursor: Point, pointerAlreadyEntered: boolean): void {
     if (!this.window || this.window.isDestroyed()) return
 
     const target = this.getPanelBounds(cursor)
     this.edgeOpened = true
+    this.pointerEnteredPanel = pointerAlreadyEntered
     this.window.setBounds({ ...target, y: target.y - target.height })
     this.window.showInactive()
     this.animateWindowTo(target.y)
@@ -265,6 +276,7 @@ export class AppController {
     if (!this.window || this.window.isDestroyed()) return
 
     this.edgeOpened = false
+    this.pointerEnteredPanel = false
     const display = screen.getDisplayMatching(this.window.getBounds())
     const hiddenY = display.workArea.y - this.window.getBounds().height
     this.animateWindowTo(hiddenY, () => this.window?.hide())
@@ -347,23 +359,10 @@ export class AppController {
     return card
   }
 
-  private showScheduledNotification(): void {
-    const card = this.selectNextCard(true, 'notification')
-    this.showNotification(card)
-  }
-
-  private showNotification(card: LearningCard): boolean {
-    if (!Notification.isSupported()) return false
-
-    const notification = new Notification({
-      title: `Sagelet · English ${card.level}`,
-      body: `${card.title} — ${card.notificationText}`,
-      icon: createAppIcon(),
-      silent: false
-    })
-    notification.on('click', () => this.showWindow())
-    notification.show()
-    return true
+  private showScheduledPanel(): void {
+    if (this.window?.isVisible()) return
+    this.selectNextCard(true, 'notification')
+    this.revealScheduledPanel()
   }
 
   private configureLoginItem(openAtLogin: boolean): void {

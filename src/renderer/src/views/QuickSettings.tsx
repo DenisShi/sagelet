@@ -1,7 +1,11 @@
 import { SettingOutlined } from '@ant-design/icons'
 import { Button, Divider, Flex, Form, Popover, Select, Switch, Typography } from 'antd'
 import { useEffect, useState, type JSX } from 'react'
-import type { AppSettings, LearningLevel } from '../../../shared/models'
+import type {
+  AppSettings,
+  LearningLevel,
+  ThemeMode
+} from '../../../shared/models'
 
 type Props = {
   settings: AppSettings
@@ -21,6 +25,11 @@ const intervalOptions = [15, 30, 60, 120, 180].map((minutes) => ({
   label: minutes < 60 ? `${minutes} min` : `${minutes / 60} h`
 }))
 
+const themeOptions: Array<{ value: ThemeMode; label: string }> = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' }
+]
+
 export function QuickSettings({ settings, busy, onSave }: Props): JSX.Element {
   const [draft, setDraft] = useState(settings)
   const [open, setOpen] = useState(false)
@@ -35,7 +44,7 @@ export function QuickSettings({ settings, busy, onSave }: Props): JSX.Element {
   const content = (
     <Form className="quick-settings" layout="vertical" size="small">
       <Flex className="quick-settings__switch-row" align="center" justify="space-between">
-        <Typography.Text>Notifications</Typography.Text>
+        <Typography.Text>Automatic reminders</Typography.Text>
         <Switch
           size="small"
           checked={draft.notificationsEnabled}
@@ -57,6 +66,13 @@ export function QuickSettings({ settings, busy, onSave }: Props): JSX.Element {
           onChange={(notificationIntervalMinutes) =>
             setDraft({ ...draft, notificationIntervalMinutes })
           }
+        />
+      </Form.Item>
+      <Form.Item label="Appearance">
+        <Select
+          value={draft.themeMode}
+          options={themeOptions}
+          onChange={(themeMode) => setDraft({ ...draft, themeMode })}
         />
       </Form.Item>
       <Flex className="quick-settings__switch-row" align="center" justify="space-between">

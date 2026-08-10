@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const learningLevels = ['A1', 'A2', 'B1', 'B2'] as const
 export const cardCategories = ['grammar', 'vocabulary', 'phrase'] as const
+export const themeModes = ['light', 'dark'] as const
 
 export const learningCardSchema = z.object({
   id: z.string().min(1),
@@ -34,7 +35,8 @@ export const appSettingsSchema = z
     activeEnd: z.string().regex(timePattern),
     activeDays: z.array(z.number().int().min(0).max(6)).min(1),
     maxNotificationsPerDay: z.number().int().min(1).max(24),
-    startAtLogin: z.boolean()
+    startAtLogin: z.boolean(),
+    themeMode: z.enum(themeModes).default('light')
   })
   .superRefine((settings, context) => {
     if (settings.activeStart >= settings.activeEnd) {
@@ -48,6 +50,7 @@ export const appSettingsSchema = z
 
 export type LearningLevel = (typeof learningLevels)[number]
 export type CardCategory = (typeof cardCategories)[number]
+export type ThemeMode = (typeof themeModes)[number]
 export type LearningCard = z.infer<typeof learningCardSchema>
 export type AppSettings = z.infer<typeof appSettingsSchema>
 export type CardFeedback = 'understood' | 'repeat'
@@ -90,5 +93,6 @@ export const defaultSettings: AppSettings = {
   activeEnd: '18:00',
   activeDays: [1, 2, 3, 4, 5],
   maxNotificationsPerDay: 8,
-  startAtLogin: false
+  startAtLogin: false,
+  themeMode: 'light'
 }

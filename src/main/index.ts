@@ -25,7 +25,6 @@ if (!hasSingleInstanceLock) {
     ipcMain.handle('scheduler:pause', (_event, minutes) =>
       controller.pauseForMinutes(pauseMinutesSchema.parse(minutes))
     )
-    ipcMain.handle('notification:test', () => controller.showTestNotification())
     ipcMain.handle('window:hide', () => controller.hideWindow())
 
     app.on('second-instance', () => controller.showWindow())

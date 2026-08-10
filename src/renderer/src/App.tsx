@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type JSX } from 'react'
-import { App as AntApp, Spin } from 'antd'
+import { App as AntApp, ConfigProvider, Spin, theme } from 'antd'
 import type { BootstrapPayload } from '../../shared/contracts'
 import type { AppSettings, CardFeedback } from '../../shared/models'
 import { LearningView } from './views/LearningView'
@@ -54,16 +54,20 @@ export default function RootApp(): JSX.Element {
     )
   }
 
+  const darkMode = data.settings.themeMode === 'dark'
+
   return (
-    <main className="panel-shell">
-      <LearningView
-        data={data}
-        busy={busy}
-        onNext={() => runAction(() => window.sagelet.showNextCard())}
-        onFeedback={submitFeedback}
-        onSaveSettings={saveSettings}
-        onHide={() => void window.sagelet.hideWindow()}
-      />
-    </main>
+    <ConfigProvider theme={{ algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm }}>
+      <main className={`panel-shell panel-shell--${data.settings.themeMode}`}>
+        <LearningView
+          data={data}
+          busy={busy}
+          onNext={() => runAction(() => window.sagelet.showNextCard())}
+          onFeedback={submitFeedback}
+          onSaveSettings={saveSettings}
+          onHide={() => void window.sagelet.hideWindow()}
+        />
+      </main>
+    </ConfigProvider>
   )
 }

@@ -9,7 +9,6 @@ const api: SageletApi = {
     ipcRenderer.invoke('learning:submit-feedback', feedback),
   updateSettings: (settings: AppSettings) => ipcRenderer.invoke('settings:update', settings),
   pauseForMinutes: (minutes: number) => ipcRenderer.invoke('scheduler:pause', minutes),
-  showTestNotification: () => ipcRenderer.invoke('notification:test'),
   hideWindow: () => ipcRenderer.invoke('window:hide'),
   onCardChanged: (callback) => {
     const listener = (): void => callback()
