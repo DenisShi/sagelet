@@ -110,4 +110,21 @@ describe('ContentEngine', () => {
 
     expect(card.level).toBe('A2')
   })
+
+  it('reports viewed lesson progress for the configured level', () => {
+    const engine = new ContentEngine(englishCards)
+    const b1Cards = englishCards.filter((card) => card.level === 'B1')
+    const a2Card = englishCards.find((card) => card.level === 'A2')
+    if (!a2Card) throw new Error('Expected A2 content fixture.')
+    const progress = {
+      [b1Cards[0].id]: createProgress(b1Cards[0].id),
+      [b1Cards[1].id]: createProgress(b1Cards[1].id),
+      [a2Card.id]: createProgress(a2Card.id)
+    }
+
+    expect(engine.getLessonProgress(defaultSettings, progress)).toEqual({
+      current: 2,
+      total: b1Cards.length
+    })
+  })
 })

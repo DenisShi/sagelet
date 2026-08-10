@@ -3,6 +3,10 @@ import type { AppSettings, CardFeedback, LearningCard } from './models'
 export type BootstrapPayload = {
   settings: AppSettings
   currentCard: LearningCard
+  lessonProgress: {
+    current: number
+    total: number
+  }
   nextNotificationAt: string
   pausedUntil: string | null
 }

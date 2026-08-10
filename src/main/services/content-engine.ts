@@ -17,10 +17,21 @@ export class ContentEngine {
     return this.cards.find((card) => card.id === cardId)
   }
 
+  getLessonProgress(
+    settings: AppSettings,
+    progress: Record<string, CardProgress>
+  ): { current: number; total: number } {
+    const eligible = this.getEligibleCards(settings)
+    const seenCards = eligible.filter((card) => progress[card.id] !== undefined).length
+
+    return {
+      current: Math.max(1, Math.min(seenCards, eligible.length)),
+      total: eligible.length
+    }
+  }
+
   selectNext({ settings, progress, currentCardId, now = new Date() }: SelectCardInput): LearningCard {
-    const eligible = this.cards.filter(
-      (card) => card.topic === settings.topic && card.level === settings.level
-    )
+    const eligible = this.getEligibleCards(settings)
 
     if (eligible.length === 0) {
       throw new Error(`No learning cards found for ${settings.topic} ${settings.level}.`)
@@ -59,5 +70,11 @@ export class ContentEngine {
     if (fallback) return fallback
 
     return eligible[0]
+  }
+
+  private getEligibleCards(settings: AppSettings): LearningCard[] {
+    return this.cards.filter(
+      (card) => card.topic === settings.topic && card.level === settings.level
+    )
   }
 }

@@ -91,6 +91,7 @@ input {
 }
 
 .lesson-header {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -136,6 +137,31 @@ input {
   flex: 0 0 auto;
   font-size: 13px;
   font-weight: 500;
+}
+
+.lesson-progress {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  min-width: 190px;
+}
+
+.lesson-progress__label {
+  flex: 0 0 auto;
+  color: var(--panel-secondary-text) !important;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lesson-progress__bar.ant-progress {
+  width: 104px;
+  margin: 0;
+  line-height: 1;
+}
+
+.lesson-progress__bar .ant-progress-steps-item {
+  height: 4px !important;
+  border-radius: 4px;
 }
 
 .window-actions .ant-btn {
@@ -372,6 +398,14 @@ input {
 
   .brand-divider,
   .level-label {
+    display: none;
+  }
+
+  .lesson-progress {
+    min-width: 0;
+  }
+
+  .lesson-progress__bar.ant-progress {
     display: none;
   }
 

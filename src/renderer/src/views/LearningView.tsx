@@ -3,7 +3,7 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
+import { Button, Card, Divider, Flex, Progress, Space, Tag, Typography } from 'antd'
 import type { JSX } from 'react'
 import type { BootstrapPayload } from '../../../shared/contracts'
 import type { AppSettings, LearningCard } from '../../../shared/models'
@@ -73,6 +73,9 @@ export function LearningView({
 }: Props): JSX.Element {
   const { currentCard: card } = data
   const lessonPoints = getLessonPoints(card)
+  const lessonPercent = data.lessonProgress.total > 0
+    ? Math.round((data.lessonProgress.current / data.lessonProgress.total) * 100)
+    : 0
 
   return (
     <Card
@@ -88,6 +91,19 @@ export function LearningView({
           <Divider type="vertical" className="brand-divider" />
           <Tag className="category-tag">{card.category.toUpperCase()}</Tag>
           <Text type="secondary" className="level-label">English {card.level}</Text>
+          <Flex className="lesson-progress" align="center" gap={10}>
+            <Text className="lesson-progress__label">
+              Question {data.lessonProgress.current} of {data.lessonProgress.total}
+            </Text>
+            <Progress
+              className="lesson-progress__bar"
+              percent={lessonPercent}
+              steps={6}
+              showInfo={false}
+              size="small"
+              aria-label={`${lessonPercent}% of lessons viewed`}
+            />
+          </Flex>
         </Flex>
       }
       extra={
