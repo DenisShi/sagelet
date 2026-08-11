@@ -4,6 +4,7 @@ import { cardFeedbackSchema } from '../shared/models'
 import { AppController } from './app-controller'
 
 const pauseMinutesSchema = z.number().int().min(1).max(1440)
+const lessonPositionSchema = z.number().int().positive()
 
 const hasSingleInstanceLock = app.requestSingleInstanceLock()
 
@@ -18,6 +19,9 @@ if (!hasSingleInstanceLock) {
 
     ipcMain.handle('learning:get-bootstrap', () => controller.getBootstrap())
     ipcMain.handle('learning:show-next-card', () => controller.showNextCard())
+    ipcMain.handle('learning:show-card', (_event, position) =>
+      controller.showLessonCard(lessonPositionSchema.parse(position))
+    )
     ipcMain.handle('learning:submit-feedback', (_event, feedback) =>
       controller.submitFeedback(cardFeedbackSchema.parse(feedback))
     )

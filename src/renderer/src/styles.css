@@ -160,12 +160,31 @@ input {
 }
 
 .lesson-progress__step {
+  appearance: none;
   flex: 1 1 0;
   min-width: 0;
   height: 5px;
+  padding: 0;
+  border: 0;
   border-radius: 4px;
   background: color-mix(in srgb, var(--panel-border) 76%, transparent);
+  cursor: pointer;
   transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.lesson-progress__step:hover,
+.lesson-progress__step:focus-visible {
+  background: color-mix(in srgb, var(--accent) 65%, var(--panel-border));
+  outline: none;
+  transform: scaleY(1.6);
+}
+
+.lesson-progress__step:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.lesson-progress__step:disabled {
+  cursor: wait;
 }
 
 .lesson-progress__step--active {

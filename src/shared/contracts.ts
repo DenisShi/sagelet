@@ -14,6 +14,7 @@ export type BootstrapPayload = {
 export type SageletApi = {
   getBootstrap: () => Promise<BootstrapPayload>
   showNextCard: () => Promise<BootstrapPayload>
+  showLessonCard: (position: number) => Promise<BootstrapPayload>
   submitFeedback: (feedback: CardFeedback) => Promise<BootstrapPayload>
   updateSettings: (settings: AppSettings) => Promise<BootstrapPayload>
   pauseForMinutes: (minutes: number) => Promise<BootstrapPayload>

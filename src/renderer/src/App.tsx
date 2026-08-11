@@ -81,6 +81,9 @@ export default function RootApp(): JSX.Element {
           data={data}
           busy={busy}
           onNext={() => runAction(() => window.sagelet.showNextCard())}
+          onSelectQuestion={(position) =>
+            runAction(() => window.sagelet.showLessonCard(position))
+          }
           onGotIt={submitUnderstood}
           onSaveSettings={saveSettings}
           onHide={() => void window.sagelet.hideWindow()}

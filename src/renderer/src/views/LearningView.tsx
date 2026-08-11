@@ -15,6 +15,7 @@ type Props = {
   data: BootstrapPayload
   busy: boolean
   onNext: () => void
+  onSelectQuestion: (position: number) => void
   onGotIt: () => void
   onSaveSettings: (settings: AppSettings) => void
   onHide: () => void
@@ -67,6 +68,7 @@ export function LearningView({
   data,
   busy,
   onNext,
+  onSelectQuestion,
   onGotIt,
   onSaveSettings,
   onHide
@@ -98,21 +100,23 @@ export function LearningView({
             </Text>
             <div
               className="lesson-progress__steps"
-              role="progressbar"
-              aria-label={`Question ${data.lessonProgress.current} of ${data.lessonProgress.total}`}
-              aria-valuemin={1}
-              aria-valuemax={data.lessonProgress.total}
-              aria-valuenow={data.lessonProgress.current}
+              role="group"
+              aria-label="Question navigation"
             >
               {lessonSteps.map((step) => (
-                <span
+                <button
+                  type="button"
                   className={
                     step === data.lessonProgress.current
                       ? 'lesson-progress__step lesson-progress__step--active'
                       : 'lesson-progress__step'
                   }
                   key={step}
-                  aria-hidden="true"
+                  aria-label={`Open question ${step}`}
+                  aria-pressed={step === data.lessonProgress.current}
+                  disabled={busy}
+                  title={`Question ${step}`}
+                  onClick={() => onSelectQuestion(step)}
                 />
               ))}
             </div>

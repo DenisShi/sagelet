@@ -30,6 +30,16 @@ export class ContentEngine {
     }
   }
 
+  getLessonCard(settings: AppSettings, position: number): LearningCard {
+    const card = this.getEligibleCards(settings)[position - 1]
+
+    if (!card) {
+      throw new Error(`Question ${position} is not available for ${settings.topic} ${settings.level}.`)
+    }
+
+    return card
+  }
+
   selectNext({ settings, progress, currentCardId, now = new Date() }: SelectCardInput): LearningCard {
     const eligible = this.getEligibleCards(settings)
 

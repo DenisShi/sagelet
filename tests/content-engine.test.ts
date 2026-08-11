@@ -121,6 +121,22 @@ describe('ContentEngine', () => {
     })
   })
 
+  it('returns the card at the requested lesson position', () => {
+    const engine = new ContentEngine(englishCards)
+    const b1Cards = englishCards.filter((card) => card.level === 'B1')
+
+    expect(engine.getLessonCard(defaultSettings, 5)).toEqual(b1Cards[4])
+  })
+
+  it('rejects a lesson position outside the configured level', () => {
+    const engine = new ContentEngine(englishCards)
+    const b1Cards = englishCards.filter((card) => card.level === 'B1')
+
+    expect(() => engine.getLessonCard(defaultSettings, b1Cards.length + 1)).toThrow(
+      `Question ${b1Cards.length + 1} is not available for english B1.`
+    )
+  })
+
   it('falls back to the first position when the active card is not eligible', () => {
     const engine = new ContentEngine(englishCards)
     const b1Cards = englishCards.filter((card) => card.level === 'B1')

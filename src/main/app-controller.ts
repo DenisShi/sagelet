@@ -127,6 +127,14 @@ export class AppController {
     return this.getBootstrap()
   }
 
+  showLessonCard(position: number): BootstrapPayload {
+    const state = this.store.getState()
+    const card = this.contentEngine.getLessonCard(state.settings, position)
+    this.store.setCurrentCard(card)
+    this.notifyRenderer()
+    return this.getBootstrap()
+  }
+
   submitFeedback(feedback: CardFeedback): BootstrapPayload {
     const card = this.ensureCurrentCard()
     this.store.setFeedback(card.id, feedback)
