@@ -114,7 +114,7 @@ export class AppController {
     return {
       settings: state.settings,
       currentCard,
-      lessonProgress: this.contentEngine.getLessonProgress(state.settings, state.progress),
+      lessonProgress: this.contentEngine.getLessonProgress(state.settings, currentCard.id),
       nextNotificationAt: state.nextNotificationAt,
       pausedUntil: state.pausedUntil
     }

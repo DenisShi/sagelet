@@ -3,7 +3,7 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { Button, Card, Divider, Flex, Progress, Space, Tag, Typography } from 'antd'
+import { Button, Card, Divider, Flex, Space, Tag, Typography } from 'antd'
 import type { JSX } from 'react'
 import type { BootstrapPayload } from '../../../shared/contracts'
 import type { AppSettings, LearningCard } from '../../../shared/models'
@@ -73,9 +73,10 @@ export function LearningView({
 }: Props): JSX.Element {
   const { currentCard: card } = data
   const lessonPoints = getLessonPoints(card)
-  const lessonPercent = data.lessonProgress.total > 0
-    ? Math.round((data.lessonProgress.current / data.lessonProgress.total) * 100)
-    : 0
+  const lessonSteps = Array.from(
+    { length: data.lessonProgress.total },
+    (_, index) => index + 1
+  )
 
   return (
     <Card
@@ -95,14 +96,26 @@ export function LearningView({
             <Text className="lesson-progress__label">
               Question {data.lessonProgress.current} of {data.lessonProgress.total}
             </Text>
-            <Progress
-              className="lesson-progress__bar"
-              percent={lessonPercent}
-              steps={6}
-              showInfo={false}
-              size="small"
-              aria-label={`${lessonPercent}% of lessons viewed`}
-            />
+            <div
+              className="lesson-progress__steps"
+              role="progressbar"
+              aria-label={`Question ${data.lessonProgress.current} of ${data.lessonProgress.total}`}
+              aria-valuemin={1}
+              aria-valuemax={data.lessonProgress.total}
+              aria-valuenow={data.lessonProgress.current}
+            >
+              {lessonSteps.map((step) => (
+                <span
+                  className={
+                    step === data.lessonProgress.current
+                      ? 'lesson-progress__step lesson-progress__step--active'
+                      : 'lesson-progress__step'
+                  }
+                  key={step}
+                  aria-hidden="true"
+                />
+              ))}
+            </div>
           </Flex>
         </Flex>
       }

@@ -19,13 +19,13 @@ export class ContentEngine {
 
   getLessonProgress(
     settings: AppSettings,
-    progress: Record<string, CardProgress>
+    currentCardId: string
   ): { current: number; total: number } {
     const eligible = this.getEligibleCards(settings)
-    const seenCards = eligible.filter((card) => progress[card.id] !== undefined).length
+    const currentIndex = eligible.findIndex((card) => card.id === currentCardId)
 
     return {
-      current: Math.max(1, Math.min(seenCards, eligible.length)),
+      current: currentIndex >= 0 ? currentIndex + 1 : 1,
       total: eligible.length
     }
   }

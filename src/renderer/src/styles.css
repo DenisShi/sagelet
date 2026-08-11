@@ -153,15 +153,24 @@ input {
   white-space: nowrap;
 }
 
-.lesson-progress__bar.ant-progress {
-  width: 104px;
-  margin: 0;
-  line-height: 1;
+.lesson-progress__steps {
+  display: flex;
+  width: 164px;
+  gap: 3px;
 }
 
-.lesson-progress__bar .ant-progress-steps-item {
-  height: 4px !important;
+.lesson-progress__step {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 5px;
   border-radius: 4px;
+  background: color-mix(in srgb, var(--panel-border) 76%, transparent);
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.lesson-progress__step--active {
+  background: var(--accent);
+  transform: scaleY(1.6);
 }
 
 .window-actions .ant-btn {
@@ -405,7 +414,7 @@ input {
     min-width: 0;
   }
 
-  .lesson-progress__bar.ant-progress {
+  .lesson-progress__steps {
     display: none;
   }
 
