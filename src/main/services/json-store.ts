@@ -7,6 +7,7 @@ import type {
   PersistedState
 } from '../../shared/models'
 import { appSettingsSchema, defaultSettings } from '../../shared/models'
+import { calculateReviewAt, calculateSkippedReviewAt } from '../../domain/review-schedule'
 
 const createInitialState = (): PersistedState => ({
   settings: defaultSettings,
@@ -69,14 +70,24 @@ export class JsonStore {
     this.state.progress[cardId] = {
       ...progress,
       learned: feedback === 'understood',
-      nextReviewAt:
-        feedback === 'repeat' ? new Date(now.getTime() + 30 * 60_000).toISOString() : null
+      nextReviewAt: calculateReviewAt(progress, feedback, now).toISOString()
     }
 
     const historyItem = this.state.history.find(
       (item) => item.cardId === cardId && item.feedback === null
     )
     if (historyItem) historyItem.feedback = feedback
+    this.write()
+  }
+
+  deferCard(cardId: string, now = new Date()): void {
+    const progress = this.state.progress[cardId]
+    if (!progress) return
+
+    this.state.progress[cardId] = {
+      ...progress,
+      nextReviewAt: calculateSkippedReviewAt(now).toISOString()
+    }
     this.write()
   }
 

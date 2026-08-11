@@ -1,20 +1,23 @@
 # Sagelet — Windows MVP
 
-Sagelet is a small desktop learning companion. It stays in the Windows system tray, shows short English lessons on a schedule, and opens the full learning card when a notification is clicked.
+Sagelet is a small desktop learning companion. It stays in the Windows system tray and reveals a short English lesson when the pointer touches the top edge of the screen.
 
 The first version is intentionally local: it does not require an account, backend, internet connection, or AI API.
 
 ## What is already implemented
 
 - Electron + React + TypeScript desktop application.
-- Main learning-card window with `Got it`, `Repeat later`, and `Next idea` actions.
-- Local English content for levels A1–B2.
+- Compact top-edge learning card with `Got it`, `Repeat later`, and `Next idea` actions.
+- English explanations, Russian translations, and bilingual examples.
+- Expanded local English content for levels A1–B2.
+- Randomized new-card selection and spaced review intervals without immediate repeats.
 - Native desktop notifications and click-to-open behavior.
 - Windows system tray with open, next card, pause, and exit actions.
 - Scheduler with active hours, weekdays, interval, daily limit, and pause support.
 - Safe resume after sleep and no notification burst after missed reminders.
-- Local settings, progress, current card, and history persistence.
+- Local settings and learning progress persistence.
 - Optional launch with Windows.
+- Minimal settings popover for level, reminder interval, notifications, and Windows startup.
 - Isolated preload bridge with `contextIsolation`, disabled Node integration, and renderer sandboxing.
 
 ## Start locally
@@ -26,7 +29,7 @@ npm install
 npm run dev
 ```
 
-In the application, use `Send test notification` to test notifications immediately. Closing the main window hides it to the tray; use `Exit` in the tray menu to stop the application completely.
+Move the pointer to the top edge of the screen to reveal Sagelet. Moving away hides an edge-opened card automatically. The tray menu can open the card manually, pause reminders, or exit the application completely.
 
 ## Verify the project
 
@@ -63,12 +66,10 @@ tests/             pure scheduler and content-selection tests
 
 ## Where local data is stored
 
-Electron writes `sagelet-state.json` inside the current user's application data directory. On Windows this is normally under `%APPDATA%/Sagelet/`. Removing that file resets settings, progress, and history.
+Electron writes `sagelet-state.json` inside the current user's application data directory. On Windows this is normally under `%APPDATA%/Sagelet/`. Removing that file resets settings and progress.
 
 ## Next development steps
 
-1. Expand and proofread the local content pack.
-2. Add a first-run onboarding screen.
-3. Add a branded Windows icon and code signing.
-4. Add more review intervals and learning statistics.
-5. Introduce a backend content provider, then connect AI generation without exposing an API key in the desktop application.
+1. Continue expanding and proofreading the local content pack.
+2. Add a branded Windows icon and code signing.
+3. Introduce a backend content provider, then connect AI generation without exposing an API key in the desktop application.

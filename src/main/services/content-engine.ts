@@ -8,46 +8,83 @@ type SelectCardInput = {
 }
 
 export class ContentEngine {
-  constructor(private readonly cards: LearningCard[]) {}
+  constructor(
+    private readonly cards: readonly LearningCard[],
+    private readonly random: () => number = Math.random
+  ) {}
 
   getById(cardId: string | null): LearningCard | undefined {
     return this.cards.find((card) => card.id === cardId)
   }
 
+  getLessonProgress(
+    settings: AppSettings,
+    currentCardId: string
+  ): { current: number; total: number } {
+    const eligible = this.getEligibleCards(settings)
+    const currentIndex = eligible.findIndex((card) => card.id === currentCardId)
+
+    return {
+      current: currentIndex >= 0 ? currentIndex + 1 : 1,
+      total: eligible.length
+    }
+  }
+
+  getLessonCard(settings: AppSettings, position: number): LearningCard {
+    const card = this.getEligibleCards(settings)[position - 1]
+
+    if (!card) {
+      throw new Error(`Question ${position} is not available for ${settings.topic} ${settings.level}.`)
+    }
+
+    return card
+  }
+
   selectNext({ settings, progress, currentCardId, now = new Date() }: SelectCardInput): LearningCard {
-    const eligible = this.cards.filter(
-      (card) => card.topic === settings.topic && card.level === settings.level
-    )
+    const eligible = this.getEligibleCards(settings)
 
     if (eligible.length === 0) {
       throw new Error(`No learning cards found for ${settings.topic} ${settings.level}.`)
     }
 
+    const pickRandom = (cards: LearningCard[]): LearningCard | undefined =>
+      cards[Math.floor(this.random() * cards.length)]
+
+    const unseen = eligible.filter(
+      (card) => progress[card.id] === undefined && card.id !== currentCardId
+    )
+    const unseenCard = pickRandom(unseen)
+    if (unseenCard) return unseenCard
+
     const dueForReview = eligible
       .filter((card) => {
         const nextReviewAt = progress[card.id]?.nextReviewAt
-        return nextReviewAt !== null && nextReviewAt !== undefined && new Date(nextReviewAt) <= now
+        return (
+          card.id !== currentCardId &&
+          nextReviewAt !== null &&
+          nextReviewAt !== undefined &&
+          new Date(nextReviewAt) <= now
+        )
       })
-      .sort((left, right) => {
-        const leftReview = progress[left.id]?.nextReviewAt ?? ''
-        const rightReview = progress[right.id]?.nextReviewAt ?? ''
-        return leftReview.localeCompare(rightReview)
-      })
 
-    const dueDifferentCard = dueForReview.find((card) => card.id !== currentCardId)
-    if (dueDifferentCard) return dueDifferentCard
-    if (dueForReview[0]) return dueForReview[0]
+    const dueCard = pickRandom(dueForReview)
+    if (dueCard) return dueCard
 
-    const unseen = eligible.filter((card) => progress[card.id] === undefined)
-    const unseenDifferentCard = unseen.find((card) => card.id !== currentCardId)
-    if (unseenDifferentCard) return unseenDifferentCard
-    if (unseen[0]) return unseen[0]
+    const previouslySeen = eligible
+      .filter((card) => card.id !== currentCardId && progress[card.id] !== undefined)
+      .sort((left, right) =>
+        progress[right.id].lastSeenAt.localeCompare(progress[left.id].lastSeenAt)
+      )
+    const recentCardsToAvoid = Math.min(4, Math.max(0, previouslySeen.length - 1))
+    const fallback = pickRandom(previouslySeen.slice(recentCardsToAvoid))
+    if (fallback) return fallback
 
-    return [...eligible].sort((left, right) => {
-      if (left.id === currentCardId) return 1
-      if (right.id === currentCardId) return -1
+    return eligible[0]
+  }
 
-      return progress[left.id].lastSeenAt.localeCompare(progress[right.id].lastSeenAt)
-    })[0]
+  private getEligibleCards(settings: AppSettings): LearningCard[] {
+    return this.cards.filter(
+      (card) => card.topic === settings.topic && card.level === settings.level
+    )
   }
 }

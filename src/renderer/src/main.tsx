@@ -9,19 +9,26 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#6d55f7',
-          colorInfo: '#6d55f7',
-          colorSuccess: '#21a47d',
-          colorText: '#27253d',
-          colorTextSecondary: '#77748e',
-          borderRadius: 12,
+          colorPrimary: '#a6380c',
+          colorInfo: '#a6380c',
+          colorSuccess: '#49785f',
+          colorText: '#232b38',
+          colorTextSecondary: '#666b73',
+          colorBgBase: '#fdfaf5',
+          colorBgElevated: '#fffdf9',
+          colorBorder: '#e5d6c4',
+          colorSplit: '#eadfd3',
+          borderRadius: 8,
+          controlHeight: 32,
+          fontSize: 13,
           fontFamily:
-            'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+            '"Segoe UI", ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif'
         },
         components: {
-          Button: { controlHeight: 42, borderRadius: 12, fontWeight: 600 },
-          Select: { controlHeight: 42 },
-          Switch: { colorPrimary: '#6d55f7', colorPrimaryHover: '#5d44ed' }
+          Button: { borderRadius: 7, fontWeight: 500 },
+          Card: { bodyPaddingSM: 16, headerHeightSM: 58 },
+          Select: { controlHeightSM: 28 },
+          Switch: { colorPrimary: '#a6380c', colorPrimaryHover: '#7e2809' }
         }
       }}
     >

@@ -1,9 +1,12 @@
-import type { AppSettings, CardFeedback, HistoryItem, LearningCard } from './models'
+import type { AppSettings, CardFeedback, LearningCard } from './models'
 
 export type BootstrapPayload = {
   settings: AppSettings
   currentCard: LearningCard
-  history: HistoryItem[]
+  lessonProgress: {
+    current: number
+    total: number
+  }
   nextNotificationAt: string
   pausedUntil: string | null
 }
@@ -11,10 +14,10 @@ export type BootstrapPayload = {
 export type SageletApi = {
   getBootstrap: () => Promise<BootstrapPayload>
   showNextCard: () => Promise<BootstrapPayload>
+  showLessonCard: (position: number) => Promise<BootstrapPayload>
   submitFeedback: (feedback: CardFeedback) => Promise<BootstrapPayload>
   updateSettings: (settings: AppSettings) => Promise<BootstrapPayload>
   pauseForMinutes: (minutes: number) => Promise<BootstrapPayload>
-  showTestNotification: () => Promise<{ shown: boolean }>
   hideWindow: () => Promise<void>
   onCardChanged: (callback: () => void) => () => void
 }
