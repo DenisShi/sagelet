@@ -17,7 +17,7 @@ import type {
 } from '../shared/models'
 import { appSettingsSchema } from '../shared/models'
 import type { BootstrapPayload } from '../shared/contracts'
-import { englishCards } from './content/english'
+import { englishContentProvider } from './content/english-content-provider'
 import { ContentEngine } from './services/content-engine'
 import { JsonStore } from './services/json-store'
 import {
@@ -59,7 +59,7 @@ export class AppController {
   private window: BrowserWindow | null = null
   private tray: Tray | null = null
   private readonly store: JsonStore
-  private readonly contentEngine = new ContentEngine(englishCards)
+  private readonly contentEngine = new ContentEngine(englishContentProvider.getCards())
   private readonly scheduler: NotificationScheduler
   private screenLocked = false
   private quitting = false

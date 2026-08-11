@@ -9,7 +9,7 @@ type SelectCardInput = {
 
 export class ContentEngine {
   constructor(
-    private readonly cards: LearningCard[],
+    private readonly cards: readonly LearningCard[],
     private readonly random: () => number = Math.random
   ) {}
 

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { englishCards } from '../src/main/content/english'
+import { englishContentProvider } from '../src/main/content/english-content-provider'
 import { ContentEngine } from '../src/main/services/content-engine'
 import { defaultSettings, type CardProgress } from '../src/shared/models'
+
+const englishCards = englishContentProvider.getCards()
 
 const createProgress = (cardId: string, nextReviewAt: string | null = null): CardProgress => ({
   seenCount: 1,
@@ -52,6 +54,23 @@ describe('ContentEngine', () => {
     })
 
     expect(progress[card.id as keyof typeof progress]).toBeUndefined()
+  })
+
+  it('does not repeat a level card before all 100 cards have been seen', () => {
+    const engine = new ContentEngine(englishCards, () => 0)
+    const b1Cards = englishCards.filter((card) => card.level === 'B1')
+    const finalUnseenCard = b1Cards[99]
+    const progress = Object.fromEntries(
+      b1Cards.slice(0, 99).map((card) => [card.id, createProgress(card.id)])
+    )
+
+    const card = engine.selectNext({
+      settings: defaultSettings,
+      progress,
+      currentCardId: b1Cards[0].id
+    })
+
+    expect(card.id).toBe(finalUnseenCard.id)
   })
 
   it('selects a due review after all cards at the level have been seen', () => {
